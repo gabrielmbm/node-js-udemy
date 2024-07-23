@@ -89,4 +89,45 @@ router.post('/articles/update', (req, res) => {
     });
 });
 
+// Sistema de paginação
+router.get('/articles/page/:num', (req, res) => {
+    let page = req.params.num;
+    let offset = 0;
+    let limitPage = 5;
+    if (isNaN(page) || page == 1) {
+        offset = 0
+    }else{
+        offset = (parseInt(page) -1) * limitPage
+    }
+
+    Article.findAndCountAll({
+        limit: limitPage,
+        offset: offset,
+        order: [
+            ['id','DESC']
+        ]
+    }).then(articles => {
+        let next;
+        
+        if ((offset + limitPage) >= articles.count) {
+            next = false;
+        }else{
+            next= true;
+        }
+
+        let result = {
+            page: parseInt(page),
+            next: next,
+            articles: articles
+        }
+        Category.findAll().then(categories => {
+            res.render('admin/articles/page', {
+                result: result,
+                categories: categories
+            })
+        });
+        
+    })
+});
+
 module.exports = router 
