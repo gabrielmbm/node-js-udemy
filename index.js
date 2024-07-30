@@ -1,16 +1,27 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const session = require('express-session')
 const connection = require('./database/database');
 
 const categoriesController = require('./categories/CategoriesController');
 const articlesController = require('./articles/ArticleController');
+const usersController = require('./users/UsersController');
 
 const Article = require('./articles/Article');
 const Category = require('./categories/Category');
+const User = require('./users/User');
 
 // View engine
 app.set('view engine', 'ejs');
+
+// Config sessões
+app.use(session({
+    secret: 'guiapress',
+    cookie: {
+        maxAge: 30000
+    }
+}))
 
 // Static files
 app.use(express.static('public'));
@@ -35,6 +46,17 @@ app.use('/', categoriesController);
 
 // Importando as rotas de artigos
 app.use('/', articlesController)
+
+// Importando as rotas de users
+app.use('/', usersController)
+
+app.get('/session', (req, res) => {
+    // Parei aqui
+});
+
+app.get('/leitura', (req, res) => {
+    // Parei aqui
+});
 
 app.get('/', (req, res) => {
     Article.findAll({
