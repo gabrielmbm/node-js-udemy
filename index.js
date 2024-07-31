@@ -19,7 +19,7 @@ app.set('view engine', 'ejs');
 app.use(session({
     secret: 'guiapress',
     cookie: {
-        maxAge: 30000
+        maxAge: 3600000
     }
 }))
 
@@ -49,14 +49,6 @@ app.use('/', articlesController)
 
 // Importando as rotas de users
 app.use('/', usersController)
-
-app.get('/session', (req, res) => {
-    // Parei aqui
-});
-
-app.get('/leitura', (req, res) => {
-    // Parei aqui
-});
 
 app.get('/', (req, res) => {
     Article.findAll({
